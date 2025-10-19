@@ -1,15 +1,12 @@
 {% extends "base.html" %}
-{% load static %}
 {% block content %}
-<div class="place-detail">
-    <img src="{% static 'sticker.jpg' %}" alt="Place image" class="detail-img">
-
-    <h2>{{ place.title }}</h2>
+<div class="place-detail" style="background:white; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+    <h1>{{ place.name }}</h1>
     <p><strong>Тип:</strong> {{ place.place_type }}</p>
     <p><strong>Локація:</strong> {{ place.location|default:"Secret place👀" }}</p>
-
+    <p><strong>Опис:</strong> {{ place.description }}</p>
     <p><strong>Рейтинг:</strong>
-        <span class="stars">
+        <span style="color:gold;">
             {% for i in "12345"|make_list %}
                 {% if forloop.counter <= place.rating %}
                     ★
@@ -19,10 +16,5 @@
             {% endfor %}
         </span>
     </p>
-
-    <p>{{ place.description }}</p>
-    <small>Дата створення: {{ place.created_at }}</small>
-
-    <p><a href="{% url 'places_list' %}">← Повернутись до списку</a></p>
 </div>
 {% endblock %}

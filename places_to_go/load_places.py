@@ -1,35 +1,8 @@
-import random
-from django.shortcuts import render, redirect, get_object_or_404
 from .models import Place
-from .forms import PlaceForm
 
-def add_place(request):
-    if request.method == "POST":
-        form = PlaceForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("places_list")
-    else:
-        form = PlaceForm()
-    return render(request, "places_to_go/add_place.html", {"form": form})
-
-
-def places_list(request):
-    places = Place.objects.all().order_by('-rating')
-    return render(request, "places_to_go/places_list.html", {"places": places})
-
-
-def place_detail(request, pk):
-    place = get_object_or_404(Place, pk=pk)
-    return render(request, "places_to_go/place_detail.html", {"place": place})
-
-def add_default_places(session_key):
-    # Перевіряємо, чи користувач уже має якісь місця
-    if Place.objects.filter(session_key=session_key).exists():
-        return  # нічого не робимо, якщо вже є
-
-    default_places = [
-    {
+def load_initial_places():
+    data = [
+        {
             "name": "Electroperedachi",
             "type": "вечірка",
             "location": "завжди різна",
@@ -138,61 +111,8 @@ def add_default_places(session_key):
             "location": "https://maps.app.goo.gl/D1Kn2zRrUAufyQ8o6",
             "description": "Барвистий район Києва з архітектурною красою та європейським шармом.",
             "rating": 4
-        },        
-        {
-            "name": "Тісто та хміль",
-            "description": "Смачна італійська кухня з європейським нахилом.",
-            "type": "Ресторан",
-            "location": "Метро Дарниця",
-            "rating": 4.5,
-        },
-        {
-            "name": "Нац. бот. сад ім. Гришка",
-            "description": "Просторі схили Печерську, затишні кущі для лежання.",
-            "type": "Парк",
-            "location": "Метро Звіриницька",
-            "rating": 4.0,
-        },
-        {
-            "name": "Мама Манана",
-            "description": "Прекрасна грузинська кухня, вааах смачно!",
-            "type": "Ресторан",
-            "location": "Велика кількість закладів по Києву",
-            "rating": 5.0,
-        },
-        {
-            "name": "Pan Chang",
-            "description": "Азійська кухня, смачно, доволі гучна музика у залі.",
-            "type": "Ресторан",
-            "location": "Поділ",
-            "rating": 4.0,
-        },
-        {
-            "name": "Гамбургерна NUNU",
-            "description": "Одні з найкращих бургерів у Києві! Дуже стильний інтер'єр.",
-            "type": "Ресторан",
-            "location": "Поділ",
-            "rating": 4.0,
-        },
+        }
     ]
 
-    # Додаємо кожне місце у базу
-    for data in default_places:
-        Place.objects.create(session_key=session_key, **data)
-
-def get_session_key(request):
-    """Гарантує, що кожен користувач (навіть без входу) має власний session_key."""
-    if not request.session.session_key:
-        request.session.create()
-    return request.session.session_key
-
-def index(request):
-    session_key = get_session_key(request)
-    add_default_places(session_key)  # додаємо стандартні місця при першому вході
-
-    places = Place.objects.filter(session_key=session_key)
-    chosen_place = None
-    if request.method == "POST" and places.exists():
-        weights = [p.rating for p in places]
-        chosen_place = random.choices(list(places), weights=weights, k=1)[0]
-    return render(request, "places_to_go/index.html", {"chosen_place": chosen_place})
+    for item in data:
+        Place.objects.get_or_create(**item)
