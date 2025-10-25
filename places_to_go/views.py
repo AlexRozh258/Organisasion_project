@@ -5,9 +5,11 @@ from .forms import PlaceForm
 
 def add_place(request):
     if request.method == "POST":
-        form = PlaceForm(request.POST)
+        form = PlaceForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            place = form.save(commit=False)
+            place.session_key = get_session_key(request)
+            place.save()
             return redirect("places_list")
     else:
         form = PlaceForm()
@@ -26,156 +28,175 @@ def place_detail(request, pk):
 def add_default_places(session_key):
     # Перевіряємо, чи користувач уже має якісь місця
     if Place.objects.filter(session_key=session_key).exists():
-        return  # нічого не робимо, якщо вже є
+        return
 
     default_places = [
-    {
+        {
             "name": "Electroperedachi",
-            "type": "вечірка",
+            "place_type": "вечірка",
             "location": "завжди різна",
             "description": "Техно-вечірка з унікальною атмосферою, музикою і світлом.",
             "site": "https://electroperedachi.com/en",
-            "rating": 4
+            "rating": 4,
+            "image": "places/electroperedachi.jpg"
         },
         {
             "name": "Rumbabar",
-            "type": "бар/ресторан",
+            "place_type": "бар/ресторан",
             "location": "https://maps.app.goo.gl/v2MpxJDjsfdEoBat7",
-            "description": "Гастропроєкт, що об’єднує локальні продукти та культуру української кухні.",
+            "description": "Гастропроєкт, що об'єднує локальні продукти та культуру української кухні.",
             "site": "https://www.rumbambar.com.ua/",
-            "rating": 5
+            "rating": 5,
+            "image": "places/rumbabar.jpg"
         },
         {
             "name": "Smoky Bar",
-            "type": "бар",
+            "place_type": "бар",
             "location": "https://maps.app.goo.gl/LwTNgreVTnFJBLkx5",
             "description": "Стильний бар із авторськими коктейлями у центрі Києва.",
             "menu": "https://smoky.choiceqr.com/menu/section:menyu/osin",
-            "rating": 4
+            "rating": 4,
+            "image": "places/smoky-bar.jpg"
         },
         {
             "name": "ВДНГ",
-            "type": "парк",
+            "place_type": "парк",
             "location": "https://maps.app.goo.gl/NA7REaAi5ADnozWv5",
             "description": "Найбільший виставковий і культурний центр України.",
             "site": "https://vdng.ua/",
-            "rating": 5
+            "rating": 5,
+            "image": "places/vdng.jpg"
         },
         {
             "name": "Milk Bar",
-            "type": "кав’ярня",
+            "place_type": "кав'ярня",
             "location": "https://maps.app.goo.gl/huGi4NJEoyeqSXGR6",
-            "description": "Кав’ярня з атмосферою радості, смачними десертами та турботливим сервісом.",
+            "description": "Кав'ярня з атмосферою радості, смачними десертами та турботливим сервісом.",
             "site": "https://milkbar.ua/",
             "menu": "https://milkbarshotarustaveli.choiceqr.com/section:milk-bar-brunch/mousse-au-chocolat",
-            "rating": 4
+            "rating": 4,
+            "image": "places/milk-bar.jpg"
         },
         {
             "name": "Оболонська набережна",
-            "type": "парк",
+            "place_type": "парк",
             "location": "https://maps.app.goo.gl/xtkiAPTaprFiscVn9",
             "description": "Популярне місце відпочинку на березі Дніпра з прогулянковими зонами.",
-            "rating": 4
+            "rating": 4,
+            "image": "places/obolon-naberezhna.jpg"
         },
         {
             "name": "Парк Феофанія",
-            "type": "парк",
+            "place_type": "парк",
             "location": "https://maps.app.goo.gl/E6HZoH5b6CZ4uJ9E8",
             "description": "Мальовничий парк у Києві з духовною атмосферою та природною красою.",
-            "rating": 5
+            "rating": 5,
+            "image": "places/feofaniya-park.jpg"
         },
         {
             "name": "Музей математики",
-            "type": "музей",
+            "place_type": "музей",
             "location": "https://maps.app.goo.gl/xPHrNovAW9pipJz49",
             "description": "Інтерактивний простір для вивчення математики через експерименти.",
             "site": "https://mathmuseum.com.ua/",
-            "rating": 4
+            "rating": 4,
+            "image": "places/math-museum.jpg"
         },
         {
             "name": "Музей медуз",
-            "type": "музей",
+            "place_type": "музей",
             "location": "https://maps.app.goo.gl/E9sptirRpTkugzR67",
             "description": "Український музей, де можна спостерігати за медузами та дізнатися про їх життя.",
             "site": "https://jellyfishmuseum.kyiv.ua/",
-            "rating": 4
+            "rating": 4,
+            "image": "places/jellyfish-museum.jpg"
         },
         {
             "name": "Реберня на Арсенальній",
-            "type": "ресторан",
+            "place_type": "ресторан",
             "location": "https://maps.app.goo.gl/3E6vPzHJW4AfRuB28",
             "description": "Заклад з ребрами на відкритому вогні та атмосферою демократичного спілкування.",
             "menu": "https://expz.menu/bb7f5d9f-3be2-4e30-a771-7e8781b0f635",
-            "rating": 4
+            "rating": 4,
+            "image": "places/rebernya.jpg"
         },
         {
             "name": "Capo di Monte",
-            "type": "бар/ресторан",
+            "place_type": "бар/ресторан",
             "location": "https://maps.app.goo.gl/8AM7buB2uHRFGMgL9",
             "description": "Італійський ресторан із вишуканою кухнею та затишною атмосферою.",
             "menu": "https://capodimonte.choiceqr.com/menu/section:sezonne-limonne-menyu/limonne-menyu",
-            "rating": 5
+            "rating": 5,
+            "image": "places/capo-di-monte.jpg"
         },
         {
             "name": "Хомокерамікус",
-            "type": "рукоділля",
+            "place_type": "рукоділля",
             "location": "https://maps.app.goo.gl/VTZtjg6FE48dWoY27",
             "description": "Майстер-класи з кераміки для всіх бажаючих у центрі Києва.",
             "site": "https://homoceramicus.com/",
-            "rating": 5
+            "rating": 5,
+            "image": "places/homoceramicus.jpg"
         },
         {
             "name": "Кафе Зустріч",
-            "type": "кафе",
+            "place_type": "кафе",
             "location": "https://maps.app.goo.gl/1kzYupwJxfkhPrqA8",
-            "description": "Атмосферне кафе з зеленим інтер’єром та смачними коктейлями.",
+            "description": "Атмосферне кафе з зеленим інтер'єром та смачними коктейлями.",
             "site": "https://3ustrichcafe.choiceqr.com/",
-            "rating": 5
+            "rating": 5,
+            "image": "places/kafe-zustrich.jpg"
         },
         {
             "name": "Воздвиженка",
-            "type": "прогулянка",
+            "place_type": "прогулянка",
             "location": "https://maps.app.goo.gl/D1Kn2zRrUAufyQ8o6",
             "description": "Барвистий район Києва з архітектурною красою та європейським шармом.",
-            "rating": 4
-        },        
+            "rating": 4,
+            "image": "places/vozdvyzhenka.jpg"
+        },
+        
         {
             "name": "Тісто та хміль",
             "description": "Смачна італійська кухня з європейським нахилом.",
-            "type": "Ресторан",
+            "place_type": "Ресторан",
             "location": "Метро Дарниця",
             "rating": 4.5,
+            "image": "places/tisto-ta-hmil.jpg"
         },
         {
             "name": "Нац. бот. сад ім. Гришка",
             "description": "Просторі схили Печерську, затишні кущі для лежання.",
-            "type": "Парк",
+            "place_type": "Парк",
             "location": "Метро Звіриницька",
             "rating": 4.0,
+            "image": "places/botanical-garden.jpg"
         },
         {
             "name": "Мама Манана",
             "description": "Прекрасна грузинська кухня, вааах смачно!",
-            "type": "Ресторан",
+            "place_type": "Ресторан",
             "location": "Велика кількість закладів по Києву",
             "rating": 5.0,
+            "image": "places/mama-manana.jpg"
         },
         {
             "name": "Pan Chang",
             "description": "Азійська кухня, смачно, доволі гучна музика у залі.",
-            "type": "Ресторан",
+            "place_type": "Ресторан",
             "location": "Поділ",
             "rating": 4.0,
+            "image": "places/pan-chang.jpg"
         },
         {
             "name": "Гамбургерна NUNU",
             "description": "Одні з найкращих бургерів у Києві! Дуже стильний інтер'єр.",
-            "type": "Ресторан",
+            "place_type": "Ресторан",
             "location": "Поділ",
             "rating": 4.0,
-        },
+            "image": "places/nunu-burger.jpg"
+        }
     ]
-
     # Додаємо кожне місце у базу
     for data in default_places:
         Place.objects.create(session_key=session_key, **data)

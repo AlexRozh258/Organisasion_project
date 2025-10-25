@@ -1,8 +1,12 @@
 {% load static %}
 <div class="place-preview">
-    <img src="{% static 'sticker.jpg' %}" alt="Place image" class="preview-img">
+    {% if place.image %}
+        <img src="{% get_static_prefix %}{{ place.image }}" alt="{{ place.name }}" class="preview-img">
+    {% else %}
+        <img src="{% static 'sticker.jpg' %}" alt="Place image" class="preview-img">
+    {% endif %}
 
-    <h3><a href="{% url 'place_detail' place.id %}">{{ place.title }}</a></h3>
+    <h3><a href="{% url 'place_detail' place.id %}">{{ place.name }}</a></h3>
     <p>{{ place.description|truncatewords:12 }}</p>
     <p><strong>Тип:</strong> {{ place.place_type }}</p>
     <p><strong>Локація:</strong> {{ place.location|default:"Secret place👀" }}</p>

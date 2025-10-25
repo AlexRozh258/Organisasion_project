@@ -1,6 +1,17 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
 <div class="place-detail" style="background:white; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+    
+    {% if place.image %}
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="{% static place.image %}" 
+                 alt="{{ place.name }}" 
+                 style="max-width: 100%; height: auto; border-radius: 8px; max-height: 400px;">
+        </div>
+    {% endif %}
+    
     <h1>{{ place.name }}</h1>
     <p><strong>Тип:</strong> {{ place.place_type }}</p>
     <p><strong>Локація:</strong> {{ place.location|default:"Secret place👀" }}</p>
