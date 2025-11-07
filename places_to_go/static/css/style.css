@@ -6,7 +6,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #6782ff 0%, #c300ff 100%);
     color: #333;
     min-height: 100vh;
     display: flex;
@@ -42,7 +42,7 @@ nav a {
 }
 
 nav a:hover {
-    color: #667eea;
+    color: #4767f6;
 }
 
 main {
@@ -85,13 +85,13 @@ footer {
 
 .hero-section p {
     color: #718096;
-    font-size: 1.3rem; /* Більший текст */
+    font-size: 1.3rem;
     line-height: 1.6;
     margin-bottom: 2rem;
 }
 
 .btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #6d78ec 100%);
     color: white;
     border: none;
     padding: 10px 25px;
@@ -103,11 +103,9 @@ footer {
 }
 
 .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.6);
 }
 
-/* Стилі для карток місць */
 .place-preview {
     background: white;
     border-radius: 12px;
@@ -132,7 +130,7 @@ footer {
 }
 
 .place-preview h3 {
-    font-size: 1.4rem; /* Більший заголовок картки */
+    font-size: 1.4rem;
 }
 
 .place-preview h3 a {
@@ -146,7 +144,7 @@ footer {
 }
 
 .place-preview p {
-    font-size: 1.1rem; /* Більший текст у картці */
+    font-size: 1.1rem;
     line-height: 1.5;
 }
 
@@ -155,7 +153,6 @@ footer {
     font-size: 1.2rem;
 }
 
-/* Стилі для форми */
 form {
     background: white;
     padding: 2rem;
@@ -167,7 +164,7 @@ form {
 
 form p {
     margin-bottom: 1.5rem;
-    font-size: 1.1rem; /* Більший текст форми */
+    font-size: 1.1rem; 
 }
 
 form input, form select, form textarea {
@@ -175,7 +172,7 @@ form input, form select, form textarea {
     padding: 12px;
     border: 2px solid #e2e8f0;
     border-radius: 8px;
-    font-size: 1.1rem; /* Більший текст у полях */
+    font-size: 1.1rem;
     transition: border-color 0.3s ease;
 }
 
@@ -184,7 +181,6 @@ form input:focus, form select:focus, form textarea:focus {
     border-color: #667eea;
 }
 
-/* Стилі для деталей місця */
 .place-detail {
     background: white;
     padding: 2rem;
@@ -196,14 +192,14 @@ form input:focus, form select:focus, form textarea:focus {
 
 .place-detail h1 {
     color: #4a5568;
-    font-size: 1.4rem; /* Більший заголовок деталей */
+    font-size: 1.4rem; 
     margin-bottom: 1.5rem;
     border-bottom: 3px solid #667eea;
     padding-bottom: 0.5rem;
 }
 
 .place-detail p {
-    font-size: 1.2rem; /* Більший текст деталей */
+    font-size: 1.2rem;
     line-height: 1.6;
 }
 
