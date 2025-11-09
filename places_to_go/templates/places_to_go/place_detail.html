@@ -27,5 +27,21 @@
             {% endfor %}
         </span>
     </p>
+
+    <div class="place-actions">
+        <a href="{% url 'places_list' %}" class="btn-details">← Назад до списку</a>
+        <a href="{% url 'delete_place' place.pk %}" 
+        class="btn-delete" 
+        onclick="return confirmDelete('{{ place.name }}')">
+            Видалити це місце
+        </a>
+    </div>
+
+    <script>
+    function confirmDelete(placeName) {
+        return confirm('Ви впевнені, що хочете видалити "' + placeName + '"?');
+    }
+    </script>
+    
 </div>
 {% endblock %}

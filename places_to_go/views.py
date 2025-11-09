@@ -217,3 +217,12 @@ def index(request):
         weights = [p.rating for p in places]
         chosen_place = random.choices(list(places), weights=weights, k=1)[0]
     return render(request, "places_to_go/index.html", {"chosen_place": chosen_place})
+
+def delete_place(request, pk):
+    place = get_object_or_404(Place, pk=pk)
+    
+    # Перевіряємо, що користувач може видаляти тільки свої місця
+    if place.session_key == get_session_key(request):
+        place.delete()
+    
+    return redirect("places_list")
